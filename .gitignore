@@ -20,3 +20,8 @@ venv
 
 dreambooth_joepenna
 src/taming-transformers
+
+desktop.ini
+.vscode
+/regularization_gits
+EasyDreamboothUI*
