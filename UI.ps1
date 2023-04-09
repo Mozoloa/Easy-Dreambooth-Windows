@@ -107,7 +107,7 @@ $TraininStepsBox = New-MainInputBox `
     -default 1500
 
 $classCombo = New-MainInputBox `
-    -text "Regularization Images" `
+    -text "Class" `
     -name "class_word" `
     -type "Combo" `
     -list $classes
@@ -146,10 +146,10 @@ $TrainingImagesBrowse = New-MainBrowse `
 
 
 $MainForm.Controls["main"].Controls.Add($TraininStepsBox)
-$MainForm.Controls["main"].Controls.Add($TrainingImagesBrowse)
+$MainForm.Controls["main"].Controls.Add($ModelBrowse)
 $MainForm.Controls["main"].Controls.Add($classCombo)
 $MainForm.Controls["main"].Controls.Add($tokenInputBox)
-$MainForm.Controls["main"].Controls.Add($ModelBrowse)
+$MainForm.Controls["main"].Controls.Add($TrainingImagesBrowse)
 $MainForm.Controls["main"].Controls.Add($projectNameInputBox)
 
 logger.pop "UI Starting"

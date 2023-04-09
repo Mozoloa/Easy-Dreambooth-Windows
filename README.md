@@ -6,14 +6,17 @@
 - [ Setup](#-setup)
 - [ Setting things up in the UI](#-setting-things-up-in-the-ui)
   - [ Project Name](#-project-name)
-  - [ Base Model](#-base-model)
   - [ The training images](#-the-training-images)
-  - [ The celebrity doppleganger](#-the-celebrity-doppleganger)
+  - [ Celebrity doppleganger](#-celebrity-doppleganger)
+  - [ Class](#-class)
+  - [ Base Model](#-base-model)
+  - [ Training Steps](#-training-steps)
+  - [ Train \& Use](#-train--use)
 
 ## <a name="Introduction"></a>  Introduction
 This is repo is based off [Joe Penna's Dreambooth Repo](https://github.com/JoePenna/Dreambooth-Stable-Diffusion)
 
-I originally created this fork to simplify local dreambooth training on windows for GPUs with more than 24GB of VRAM. **I found that using the countless optimized versions of dreambooth and lora never matched the quality of result you get with the original implementation, by far** and I was tired of paying for vast.ai 3090s (when I have one at home) and having to set everything up from scratch everytime.
+I originally created this fork to simplify local dreambooth face training on windows for GPUs with more than 24GB of VRAM. **I found that using the countless optimized versions of dreambooth and lora never matched the quality of result you get with the original implementation, by far** and I was tired of the cloud GPU hassle
 
 ### **⚠️ WARNING**
 
@@ -23,7 +26,7 @@ I originally created this fork to simplify local dreambooth training on windows 
 - This implementation does not fully implement Google's ideas on how to preserve the latent space:
   - Most images that are similar to what you're training will be shifted towards that.
   - e.g. If you're training a person, all people will look like you. If you're training an object, anything in that class will look like your object.
-- The provided notebook has a pruner that crunches the final model down to `~2gb`, this does not affect quality
+- The provided program has a pruner that crunches the final model down to `~2gb`, this does not affect quality
 - Follow the instructions bellow carefully
 
 
@@ -38,13 +41,12 @@ I originally created this fork to simplify local dreambooth training on windows 
 8. Wait for it to install all that's needed, this can take a while
 
 # <a name="settings-things-up"></a> Setting things up in the UI
-⚠️ ***During all those steps, do not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
+⚠️ ***During ado not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
+
+![UI](./readme-images/UI.png)
 
 ## <a name="project-name"></a> Project Name
 Name your project, this will be on the trained checkpoint model name in the end, but it does not affect training
-
-## <a name="base-model"></a> Base Model
-Browse to the model you'll use as a base for training, we recommend using [Stable Diffusion V1.5 with the New VAE](https://anga.tv/ems/model.ckpt) as this works best.
 
 ## <a name="training-images"></a> The training images
 Browse to the folder with the images of your subject. **Follow the instructions bellow to create said folder:**
@@ -64,8 +66,30 @@ Browse to the folder with the images of your subject. **Follow the instructions 
       6. Avoid wide angle distorted pics like close selfies
       7. I wouldn't bother with full body shots unless it's very important, focus on portraits and close ups
       8. Avoid major occlusions like hands and remove any other person from the pictures
-## <a name="celeb-doppleganger"></a> The celebrity doppleganger
+
+## <a name="celeb-doppleganger"></a> Celebrity doppleganger
 [Find your celebrity doppleganger by uploading some of your subject pics to this website](https://starbyface.com/)
    1. This actually helps as celebrities literally are in the "cool" zone of the latent space
    2. **Your celebrity doppleganger must exist in the model you'll use for the training**, try prompting their name in your prefered stable diffusion generation program with the model selected, if they're faithfully generated then you're good, else find another one, it's okay if they only vaguely resemble you as long as there's a little something, and the model you'll use to resume training can generate them faithfully.
    3. Enter their name in the "**Celebrity Doppleganger (token)**" field
+
+## <a name="class"></a> Class
+What gender is your subject ? This will help compare with the existing representation in the model by downloading a set of pre generated pictures of that class (woman, man or person) so everybody in the model doesn't end up looking like your subject (honestly, they will anyway lmao)
+
+## <a name="base-model"></a> Base Model
+Browse to the model you'll use as a base for training, we recommend using [Stable Diffusion V1.5 with the New VAE](https://anga.tv/ems/model.ckpt) as this works best.
+
+## <a name="training-steps"></a> Training Steps
+How many steps will the training take, obviously it will take more time if you increase the step count. It is recommended to go with 100 x your number of pics minimum, or just try with 1500 or 2000 and see how that goes (I always go with 1500 for 8 to 14 pics and it works very well)
+
+## <a name="train-Use"></a> Train & Use
+Once everything is set, click train and the rest should happen in the powershell console.
+If all goes well, the training will finish, the trained model will be pruned (to be of lower size) and once all is done, it should open the "trained_models" with your newly trained .ckpt model in it ! 
+
+You can then move it wherever you want and use it in any of your desired Stable Diffusion Software/UI by using this formula in your prompt:
+`Token(no caps no space)` + `Class`
+
+For example : if you've chosen **Barrack Obama** as your celeb doppleganger before training, and selected `man` as the **class**, then you should prompt like this : `a barrackobama man chilling on the beach, professional photography, 4K, whatever, whatever`
+
+
+
