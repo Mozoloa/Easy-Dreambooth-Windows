@@ -4,7 +4,11 @@
   - [  Introduction](#--introduction)
     - [**⚠️ WARNING**](#️-warning)
 - [ Setup](#-setup)
-- [ Prepare the training data](#-prepare-the-training-data)
+- [ Setting things up in the UI](#-setting-things-up-in-the-ui)
+  - [ Project Name](#-project-name)
+  - [ Base Model](#-base-model)
+  - [ The training images](#-the-training-images)
+  - [ The celebrity doppleganger](#-the-celebrity-doppleganger)
 
 ## <a name="Introduction"></a>  Introduction
 This is repo is based off [Joe Penna's Dreambooth Repo](https://github.com/JoePenna/Dreambooth-Stable-Diffusion)
@@ -33,14 +37,25 @@ I originally created this fork to simplify local dreambooth training on windows 
 7. Right click ***UI.ps1*** and **"Run with Powershell"**
 8. Wait for it to install all that's needed, this can take a while
 
-# <a name="prepare-the-training-data"></a> Prepare the training data
-*A detailed guide*
-1. Find 8 to 20 pictures of your subject and follow those very important directions:
-   1. All pictures need to be cropped to 512x512 pixels
-   2. All pictures need to be saved as .png files
-   3. The picture folder must only contain said pictures
-   4. You can't use an odd number of pictures, **it must be even**
-   5. Focus on having a diverse set of pictures, where all that stays in between them is what fundamentaly constitutes your subject:
+# <a name="settings-things-up"></a> Setting things up in the UI
+⚠️ ***During all those steps, do not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
+
+## <a name="project-name"></a> Project Name
+Name your project, this will be on the trained checkpoint model name in the end, but it does not affect training
+
+## <a name="base-model"></a> Base Model
+Browse to the model you'll use as a base for training, we recommend using [Stable Diffusion V1.5 with the New VAE](https://anga.tv/ems/model.ckpt) as this works best.
+
+## <a name="training-images"></a> The training images
+Browse to the folder with the images of your subject. **Follow the instructions bellow to create said folder:**
+
+   1. Create a folder somewhere
+   2. Find 8 to 20 pictures of your subject
+   3. All pictures need to be cropped to 512x512 pixels
+   4. All pictures need to be saved as .png files
+   5. The picture folder must only contain said pictures
+   6. You can't use an odd number of pictures, **it must be even**
+   7. Focus on having a diverse set of pictures, where all that stays in between them is what fundamentaly constitutes your subject:
       1. Backgrounds must not repeat between pics
       2. Clothes must not repeat between pics
       3. Use as much lighting variation as possible
@@ -49,7 +64,8 @@ I originally created this fork to simplify local dreambooth training on windows 
       6. Avoid wide angle distorted pics like close selfies
       7. I wouldn't bother with full body shots unless it's very important, focus on portraits and close ups
       8. Avoid major occlusions like hands and remove any other person from the pictures
-2. [Find your celebrity doppleganger by uploading some of your subject pics to this website](https://starbyface.com/)
+## <a name="celeb-doppleganger"></a> The celebrity doppleganger
+[Find your celebrity doppleganger by uploading some of your subject pics to this website](https://starbyface.com/)
    1. This actually helps as celebrities literally are in the "cool" zone of the latent space
-   2. **Your celebrity doppleganger must exist in the model you'll use for the training**, try prompting their name in your prefered stable diffusion generation program, if they're faithfully generated then you're good, else find another one, it's okay if they only vaguely resemble you as long as there's a little something, and the model you'll use to resume training can generate them faithfully.
-   3. Once you've found their name, remove the space and caps and use it as your **Token**. ***i.e. your celebrity doppleganger is Joe Penna, you'll then use "joepenna" as a token***
+   2. **Your celebrity doppleganger must exist in the model you'll use for the training**, try prompting their name in your prefered stable diffusion generation program with the model selected, if they're faithfully generated then you're good, else find another one, it's okay if they only vaguely resemble you as long as there's a little something, and the model you'll use to resume training can generate them faithfully.
+   3. Enter their name in the "**Celebrity Doppleganger (token)**" field

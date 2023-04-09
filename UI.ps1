@@ -27,13 +27,13 @@ function Init-Conda {
 Init-Conda
 
 $settings = @{
-    project_name          = "LeoMozoloa"
+    project_name          = ""
     training_model        = ""
-    training_images       = "G:\AI\Training\Datasets\Mozoloa\training_images"
-    max_training_steps    = 1
+    training_images       = ""
+    max_training_steps    = 1500
     regularization_images = ""
-    token                 = "matthewdelnegro"
-    class_word            = "man"
+    token                 = ""
+    class_word            = ""
     save_every_x_steps    = 0
 }
 
@@ -41,21 +41,36 @@ function Update-Settings {
     param (
         $form
     )
-    $project_name = (Find-Control $form "project_name").text
-    $token = (Find-Control $form "token").text
+    
     #Project Name
-    if ($project_name -ne "") {
-        $settings.project_name = (Find-Control $form "project_name").text.Replace(' ', "_").ToLower()
+    $project_name = (Find-Control $form "project_name").text
+    $settings.project_name = if ($project_name) {
+        (Find-Control $form "project_name").Text.Replace(' ', '_').ToLower()
     }
     else {
-        $settings.project_name = "UntitledProject"
+        'UntitledProject'
     }
+
     #Token
-    if ($token -ne "") {
-        $settings.token = (Find-Control $form "token").Text.Trim().ToLower().Replace(" ", "")
+    $token = (Find-Control $form "token").text
+    $settings.token = if ($token) {
+    (Find-Control $form "token").Text.Trim().ToLower().Replace(" ", "")
     }
     else {
-        $settings.token = "sks"
+        "sks"
+    }
+
+    #Class
+    $class_word = (Find-Control $form "class_word").SelectedIndex
+    $settings.class_word = $classes[$class_word]
+
+    #max_training_steps
+    $max_training_steps = (Find-Control $form "max_training_steps").text
+    $settings.max_training_steps = if (!$max_training_steps) {
+        $max_training_steps
+    }
+    else {
+        1500
     }
     logger.info "Settings :`n$($settings | ConvertTo-Json -Depth 4)"
 
@@ -84,6 +99,19 @@ $tokenInputBox = New-MainInputBox `
     -text "Celebrity Doppleganger (token)" `
     -type "Input" `
     -name "token"
+
+$TraininStepsBox = New-MainInputBox `
+    -text "Training Steps" `
+    -type "Int" `
+    -name "max_training_steps" `
+    -default 1500
+
+$classCombo = New-MainInputBox `
+    -text "Regularization Images" `
+    -name "class_word" `
+    -type "Combo" `
+    -list $classes
+
 
 $ModelBrowse = New-MainBrowse `
     -text "Base Model" `
@@ -116,11 +144,10 @@ $TrainingImagesBrowse = New-MainBrowse `
     } } `
     -path $settings.training_model
 
-<# $classCombo = New-MainInputBox -text "Regularization Images" -type "Combo" -list $datasets #>
 
-<# $MainArea.Controls.Add($classCombo) #>
-
+$MainForm.Controls["main"].Controls.Add($TraininStepsBox)
 $MainForm.Controls["main"].Controls.Add($TrainingImagesBrowse)
+$MainForm.Controls["main"].Controls.Add($classCombo)
 $MainForm.Controls["main"].Controls.Add($tokenInputBox)
 $MainForm.Controls["main"].Controls.Add($ModelBrowse)
 $MainForm.Controls["main"].Controls.Add($projectNameInputBox)

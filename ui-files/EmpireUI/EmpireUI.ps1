@@ -233,22 +233,34 @@ Function New-MainInputBox {
         [String]$text,
         $list,
         [string]$name,
-        $help
+        $help,
+        $default
     )
     $inputBoxField = New-ControlHeader $text $help
 
-    if ($type -eq "Combo") {
-        $InputBox = New-Object System.Windows.Forms.ComboBox
-        $InputBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
-        foreach ($item in $list) {
-            $InputBox.Items.Add($item)
+    switch ($type) {
+        'Combo' {
+            $InputBox = New-Object System.Windows.Forms.ComboBox
+            $InputBox.DropDownStyle = [System.Windows.Forms.ComboBoxStyle]::DropDownList
+            if ($list) {
+                $InputBox.Items.AddRange($list)
+                $InputBox.SelectedIndex = 0
+            }
+            break
         }
-        if ($null -ne $list -and $list.Count -gt 0) {
-            $InputBox.SelectedIndex = 0
+        'Input' {
+            $InputBox = New-Object System.Windows.Forms.TextBox
+            break
+        }
+        'Int' {
+            $InputBox = New-Object System.Windows.Forms.NumericUpDown
+            $InputBox.Maximum = 2147483647
+            $InputBox.Minimum = 0
+            break
         }
     }
-    elseif ($type -eq "Input") {
-        $InputBox = New-Object System.Windows.Forms.TextBox
+    if ($default) {
+        $inputBox.Text = $default
     }
     $InputBox.BackColor = $Theme.MainBGColor
     $InputBox.ForeColor = $Theme.MainTextColor
