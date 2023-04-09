@@ -20,6 +20,7 @@ I originally created this fork to simplify local dreambooth face training on win
 
 ### **⚠️ WARNING**
 
+- This repo probably won't be mainted much, it's a spare time side project
 - This is only for training face portraits of humans, altho you might be able to fiddle around and train other things
 - AFAIK You can **only run this on a GPU with 24GB of VRAM or more**(e.g. 3090) on **Windows 10 or 11 x64**. Making sure this is the *only* program running can greatly help the speed and stability.
 - It works best with variants of Stability's Stable Diffusion 1.5 model
@@ -37,11 +38,13 @@ I originally created this fork to simplify local dreambooth face training on win
 4. Click in the explorer address bar from within this folder, delete the existing path and type ***powershell*** and press `Enter`
 5. In the Powershell terminal, type `git clone https://github.com/Mozoloa/Easy-Dreambooth-Windows`, 
 6. Open the newly created folder named ***Easy-Dreambooth-Windows***
-7. Right click ***UI.ps1*** and **"Run with Powershell"**
-8. Wait for it to install all that's needed, this can take a while
+7. Right click ***createShortcut.ps1*** and select **"Run with PowerShell"** to create the ***EasyDreamboothUI*** shortcut
+8. (optional) After the shortcut is created right-click it, and select **"Pin to taskbar"**
+9. Launch the program (optionaly from your taskbar !)
+10. This will launch a powershell window before the UI, Wait for it to install all that's needed, this can take a while
 
 # <a name="settings-things-up"></a> Setting things up in the UI
-⚠️ ***During ado not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
+⚠️ ***During all the steps bellow, do not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
 
 ![UI](./readme-images/UI.png)
 
