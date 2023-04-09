@@ -161,6 +161,7 @@ $MainForm.ShowDialog()
 
 if ($Global:train -eq $true) {
     Start-Training $settings
+    Read-Host "Press any key to continue..."
     if (Test-Path $trainedModelsDir) {
         Invoke-Item $trainedModelsDir
     }
