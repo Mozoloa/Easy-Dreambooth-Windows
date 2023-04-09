@@ -143,10 +143,17 @@ $TrainingImagesBrowse = New-MainBrowse `
     -text "Training Images" `
     -name "trainingImagesBrowse" `
     -browseAction {
-    $folderBrowserDialog = New-Object System.Windows.Forms.FolderBrowserDialog
-    $folderBrowserDialog.Description = "Select a folder"
-    if ($folderBrowserDialog.ShowDialog() -eq 'OK') {
-        $Global:settings.training_images = $folderBrowserDialog.SelectedPath
+    $openFolderDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $openFolderDialog.Title = "Select a folder"
+    $openFolderDialog.ValidateNames = $false
+    $openFolderDialog.CheckFileExists = $false
+    $openFolderDialog.CheckPathExists = $true
+    $openFolderDialog.Filter = "Folder Selection|*.folder"
+    $openFolderDialog.FileName = "Select Folder"
+        
+    if ($openFolderDialog.ShowDialog() -eq 'OK') {
+        $selectedFolder = [System.IO.Path]::GetDirectoryName($openFolderDialog.FileName)
+        $Global:settings.training_images = $selectedFolder
         $browseText = Find-Control $MainForm "trainingImagesBrowseText"
         $browseText.Text = Get-ShortenedPath $Global:settings.training_images 40
         $browseText.Refresh()
