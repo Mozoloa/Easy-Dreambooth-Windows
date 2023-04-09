@@ -8,8 +8,7 @@
   - [ Project Name](#-project-name)
   - [ The training images](#-the-training-images)
   - [ Celebrity doppleganger](#-celebrity-doppleganger)
-  - [ Class](#-class)
-  - [ Use regularization image (not sure it's a good idea)](#-use-regularization-image-not-sure-its-a-good-idea)
+  - [ Class *("none" recommended)*](#-class-none-recommended)
   - [ Base Model](#-base-model)
   - [ Training Steps](#-training-steps)
   - [ Train \& Use](#-train--use)
@@ -77,11 +76,10 @@ Browse to the folder with the images of your subject. **Follow the instructions 
    2. **Your celebrity doppleganger must exist in the model you'll use for the training**, try prompting their name in your prefered stable diffusion generation program with the model selected, if they're faithfully generated then you're good, else find another one, it's okay if they only vaguely resemble you as long as there's a little something, and the model you'll use to resume training can generate them faithfully.
    3. Enter their name in the "**Celebrity Doppleganger (token)**" field
 
-## <a name="class"></a> Class
-What is your subject, a man, a woman or a person ?
+## <a name="class"></a> Class *("none" recommended)*
+What is your subject, a man, a woman or a person ? This will download a set of pre generated pictures of the class you've selected (see above) to compare them with how they look in the trained so everybody in the model doesn't end up looking like your subject.
 
-## <a name="use-regularization-image"></a> Use regularization image (not sure it's a good idea)
-This will download a set of pre generated pictures of the class you've selected (see above) to compare them with how they look in the trained so everybody in the model doesn't end up looking like your subject (honestly, this isn't effective and make things very slow)
+**Honestly, this isn't effective and make things twice as slow**
 
 ## <a name="base-model"></a> Base Model
 Browse to the model you'll use as a base for training, we recommend using [Stable Diffusion V1.5 with the New VAE](https://anga.tv/ems/model.ckpt) as this works best.

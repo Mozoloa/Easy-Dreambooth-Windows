@@ -18,7 +18,7 @@ $train = $false
 $InstallPath = (get-item $PSScriptRoot ).parent.FullName
 $settingsPath = ".\settings.json"
 
-$classes = @("woman", "man", "person")
+$classes = @("none", "woman", "man", "person")
 
 # Ui general variables
 $backgroundColor = [System.Drawing.ColorTranslator]::FromHtml("#000000")

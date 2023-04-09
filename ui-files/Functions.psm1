@@ -63,19 +63,19 @@ Function Start-Training {
         'token'              = $settings.token
         'training_model'     = $settings.training_model
         'training_images'    = $settings.training_images
-        'class_word'         = $settings.class_word
         'flip_p'             = 0.5
         'save_every_x_steps' = $settings.save_every_x_steps
     }
     # Add regularization images to Python arguments if selected
-    if (!$settings.use_reg_images) {
-        $reguMsg = "No regularisation images"
+    if ($settings.class_word -eq "none") {
+        $reguMsg = "No regularization images"
         $settings.regularization_images = ""
     }
     else {
         $settings.regularization_images = Set-RegImages $settings.class_word
         $pythonArgs['regularization_images'] = $settings.regularization_images
-        $reguMsg = "Regularisation images from $($settings.regularization_images)"
+        $pythonArgs['class_word'] = $settings.class_word
+        $reguMsg = "Regularization of `"$($settings.class_word)`" with images from $($settings.regularization_images)"
     }
     # Log training start
     logger.pop "Training starts now"

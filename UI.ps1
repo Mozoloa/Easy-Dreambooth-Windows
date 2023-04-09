@@ -32,7 +32,6 @@ $settings = @{
     training_images       = ""
     max_training_steps    = 1500
     regularization_images = ""
-    use_reg_images        = $false
     token                 = ""
     class_word            = ""
     save_every_x_steps    = 0
@@ -55,7 +54,7 @@ function Update-Settings {
     #Token
     $token = (Find-Control $form "token").text
     $settings.token = if ($token) {
-    (Find-Control $form "token").Text.Trim().ToLower().Replace(" ", "")
+    (Find-Control $form "token").Text
     }
     else {
         "sks"
@@ -66,8 +65,8 @@ function Update-Settings {
     $settings.class_word = $classes[$class_word]
 
     #Regu
-    $use_reg_images = (Find-Control $form "use_reg_images").Checked
-    $settings.use_reg_images = $use_reg_images
+    <#     $use_reg_images = (Find-Control $form "use_reg_images").Checked
+    $settings.use_reg_images = $use_reg_images #>
 
     #max_training_steps
     $max_training_steps = (Find-Control $form "max_training_steps").text
@@ -158,7 +157,7 @@ $TrainingImagesBrowse = New-MainBrowse `
 
 $MainForm.Controls["main"].Controls.Add($TraininStepsBox)
 $MainForm.Controls["main"].Controls.Add($ModelBrowse)
-$MainForm.Controls["main"].Controls.Add($reguCheckbox)
+<# $MainForm.Controls["main"].Controls.Add($reguCheckbox) #>
 $MainForm.Controls["main"].Controls.Add($classCombo)
 $MainForm.Controls["main"].Controls.Add($tokenInputBox)
 $MainForm.Controls["main"].Controls.Add($TrainingImagesBrowse)
