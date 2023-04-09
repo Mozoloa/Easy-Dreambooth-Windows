@@ -9,7 +9,7 @@ Function Set-RegImages {
         "man" { $dataset = "man_euler" }
         "person" { $dataset = "person_ddim" }
     }
-    $reg_data_root = ".\regularization_images\$dataset"
+    $reg_data_root = "$dreamboothFolder\regularization_images\$dataset"
     $gitRepoName = "Stable-Diffusion-Regularization-Images-$dataset"
     if (!(Test-Path $reg_data_root)) {
         if (!(Test-Path $gitLocation)) {
@@ -30,31 +30,11 @@ Function Set-RegImages {
     }
     return $reg_data_root
 }
-
-function Find-ControlByName {
-    param(
-        [System.Windows.Forms.Control]$ParentControl,
-        [string]$ControlName
-    )
-
-    foreach ($control in $ParentControl.Controls) {
-        if ($control.Name -eq $ControlName) {
-            return $control
-        }
-        elseif ($control.HasChildren) {
-            $result = Find-ControlByName -ParentControl $control -ControlName $ControlName
-            if ($null -ne $result) {
-                return $result
-            }
-        }
-    }
-    return $null
-}
 function Convert-PathToPython {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
-        [string]$Path
+        $Path
     )
 
     # Replace backslashes with forward slashes
@@ -65,60 +45,58 @@ function Convert-PathToPython {
 
     return $path
 }
+
 Function Start-Training {
-    param (
-        $settings
-    )
-    Remove-Item -Recurse -Force "$($settings.training_images)\.ipynb_checkpoints" -ErrorAction SilentlyContinue
-    $regularization_images = Set-RegImages $settings.class_word
+    param ($settings)
+
+    # Remove checkpoints
+    $leftover_training_files = @("$dreamboothFolder/training_images/.ipynb_checkpoints", "$dreamboothFolder/regularization_images/.ipynb_checkpoints")
+    foreach ($file in $leftover_training_files) {
+        Remove-Item -Recurse -Force $file -ErrorAction SilentlyContinue
+    }
+
+    # Set regularization images
+    $settings.regularization_images = Set-RegImages $settings.class_word
+
+    # Log training start
     logger.pop "Training starts now"
     logger.info "Training project with the following parameters`nBase Model: $($settings.training_model) Project Name: $($settings.project_name) '$($settings.token) $($settings.class_word)'`nUsing images from $($settings.training_images)"
-    
-    if ($regularization_images) {
-        logger.info "Regularisation images from $regularization_images"
-        <#     python "main.py" `
-            --base "configs/stable-diffusion/v1-finetune_unfrozen.yaml" `
-            -t `
-            --actual_resume $(Convert-PathToPython($settings.model_path)) `
-            --regularization_images $(Convert-PathToPython($regularization_images)) `
-            -n $($settings.projectName) `
-            --gpus 1 `
-            --data_root "$(Convert-PathToPython($settings.data_root))" `
-            --max_training_steps $($settings.max_training_steps) `
-            --class_word $($settings.class_word) `
-            --token $($settings.token) `
-            --no-test `
-            --flip_p 0.5 `
-            --save_every_x_steps $($settings.save_every_x_steps) #>
-            
-        python "main.py" `
-            --project_name "Leo" `
-            --debug False `
-            --max_training_steps 1500 `
-            --token "matthewdelnegro" `
-            --training_model "G:\AI\Training\Dreambooth\1.5-NewVAE.ckpt" `
-            --training_images "G:\AI\Training\Datasets\Mozoloa\training_images" `
-            --regularization_images "E:\Professional\Empire Media Science\Projects\AI\Easy-Dreambooth-Windows\regularization_images\man_euler" `
-            --class_word "man" `
-            --flip_p 0.5 `
-            --save_every_x_steps 0
-        
+
+    # Build Python arguments
+    $pythonArgs = @{
+        'project_name'       = $settings.project_name
+        'debug'              = $false
+        'max_training_steps' = $settings.max_training_steps
+        'token'              = $settings.token
+        'training_model'     = $settings.training_model
+        'training_images'    = $settings.training_images
+        'class_word'         = $settings.class_word
+        'flip_p'             = 0.5
+        'save_every_x_steps' = $settings.save_every_x_steps
+    }
+
+    # Add regularization images to Python arguments if available
+    if ($settings.regularization_images) {
+        logger.info "Regularisation images from $($settings.regularization_images)"
+        $pythonArgs['regularization_images'] = $settings.regularization_images
     }
     else {
         logger.info "No regularisation images"
-        python "main.py" `
-            --base "configs/stable-diffusion/v1-finetune_unfrozen.yaml" `
-            -t `
-            --actual_resume $(Convert-PathToPython($settings.model_path)) `
-            -n $($settings.projectName) `
-            --gpus 1 `
-            --data_root "$(Convert-PathToPython($settings.data_root))" `
-            --max_training_steps $($settings.max_training_steps) `
-            --class_word $($settings.class_word) `
-            --token $($settings.token) `
-            --no-test `
-            --flip_p 0.5 `
-            --save_every_x_steps $($settings.save_every_x_steps)
     }
-}
 
+    # Build Python command
+    $pythonCommand = 'python "main.py" '
+    foreach ($arg in $pythonArgs.GetEnumerator()) {
+        $value = $arg.Value
+        if ($value -is [string]) {
+            $value = "`"$value`""  # add quotemarks around the string value
+        }
+        $pythonCommand += "--$($arg.Key) $value "
+    }
+
+    # Print Python command
+    logger.info "Python command: $pythonCommand"
+
+    # Launch Python script
+    Invoke-Expression $pythonCommand
+}

@@ -11,6 +11,8 @@ $dreamboothFolder = Split-Path $PSScriptRoot -Parent
 $tempFolder = (Get-Item -Path env:\temp).Value
 $PATH = [Environment]::GetEnvironmentVariable("PATH", "Machine")
 $gitLocation = "$dreamboothFolder\regularization_gits"
+$trainedModelsDir = "$dreamboothFolder\trained_models"
+$train = $false
 
 
 $InstallPath = (get-item $PSScriptRoot ).parent.FullName

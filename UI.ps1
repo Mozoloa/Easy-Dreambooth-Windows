@@ -24,41 +24,113 @@ function Init-Conda {
     logger.action "Activating environment '$envName'"
     conda activate $envName
 }
-<# Init-Conda
- #>
+Init-Conda
+
 $settings = @{
-    project_name       = "LeoMozoloa"
-    training_model     = "G:\AI\Training\Dreambooth\1.5-NewVAE.ckpt"
-    training_images    = "G:\AI\Training\Datasets\Mozoloa\training_images"
-    max_training_steps = 10
-    token              = "matthewdelnegro"
-    class_word         = "man"
-    save_every_x_steps = 0
+    project_name          = "LeoMozoloa"
+    training_model        = ""
+    training_images       = "G:\AI\Training\Datasets\Mozoloa\training_images"
+    max_training_steps    = 1
+    regularization_images = ""
+    token                 = "matthewdelnegro"
+    class_word            = "man"
+    save_every_x_steps    = 0
 }
 
+function Update-Settings {
+    param (
+        $form
+    )
+    $project_name = (Find-Control $form "project_name").text
+    $token = (Find-Control $form "token").text
+    #Project Name
+    if ($project_name -ne "") {
+        $settings.project_name = (Find-Control $form "project_name").text.Replace(' ', "_").ToLower()
+    }
+    else {
+        $settings.project_name = "UntitledProject"
+    }
+    #Token
+    if ($token -ne "") {
+        $settings.token = (Find-Control $form "token").Text.Trim().ToLower().Replace(" ", "")
+    }
+    else {
+        $settings.token = "sks"
+    }
+    logger.info "Settings :`n$($settings | ConvertTo-Json -Depth 4)"
+
+    
+}
 # General Options
-
-$ValidateScript = { 
-    Start-Training $settings
+$ValidateScript = {
+    Update-Settings $MainForm
+    $Global:train = $true
+    <#  $MainForm.Dispose() #>
 }
 
-$MainForm = New-MainForm -Header -HeaderImage ".\ui-files\media\Title.png" -TopBar -Validate "Train" -ValidateScript $ValidateScript
+$MainForm = New-MainForm `
+    -Header `
+    -HeaderImage ".\ui-files\media\Title.png" `
+    -TopBar `
+    -Validate "Train" `
+    -ValidateScript $ValidateScript
 
-$projectInputBox = New-MainInputBox -text "Project Name" -type "Input" -name "projectName"
+$projectNameInputBox = New-MainInputBox `
+    -text "Project Name" `
+    -type "Input" `
+    -name "project_name"
 
-$CelebrityInputBox = New-MainInputBox -text "Celebrity Doppleganger" -type "Input" -name "token"
+$tokenInputBox = New-MainInputBox `
+    -text "Celebrity Doppleganger (token)" `
+    -type "Input" `
+    -name "token"
 
-$ModelBrowse = New-MainBrowseToFolder -text "Base Model" -name "modelBrowse" -help { Open-Link -link "https://google.com" } -browseAction { Open-Link -link "https://google.com" } -path $settings.training_model
+$ModelBrowse = New-MainBrowse `
+    -text "Base Model" `
+    -name "modelBrowse" `
+    -help { Open-Link -link "https://google.com" } `
+    -browseAction {
+    $openFileDialog = New-Object System.Windows.Forms.OpenFileDialog
+    $openFileDialog.Filter = "Checkpoint files (*.ckpt)|*.ckpt"
+    $openFileDialog.Title = "Select a checkpoint file"
+    if ($openFileDialog.ShowDialog() -eq 'OK') {
+        $Global:settings.training_model = $openFileDialog.FileName
+        $browseText = Find-Control $MainForm "modelBrowseText"
+        $browseText.Text = Get-ShortenedPath $Global:settings.training_model 40
+        $browseText.Refresh()
+    } } `
+    -path $settings.training_model
+
+$TrainingImagesBrowse = New-MainBrowse `
+    -text "Training Images" `
+    -name "trainingImagesBrowse" `
+    -help { Open-Link -link "https://google.com" } `
+    -browseAction {
+    $folderBrowserDialog = New-Object System.Windows.Forms.FolderBrowserDialog
+    $folderBrowserDialog.Description = "Select a folder"
+    if ($folderBrowserDialog.ShowDialog() -eq 'OK') {
+        $Global:settings.training_images = $folderBrowserDialog.SelectedPath
+        $browseText = Find-Control $MainForm "trainingImagesBrowseText"
+        $browseText.Text = Get-ShortenedPath $Global:settings.training_images 40
+        $browseText.Refresh()
+    } } `
+    -path $settings.training_model
 
 <# $classCombo = New-MainInputBox -text "Regularization Images" -type "Combo" -list $datasets #>
 
 <# $MainArea.Controls.Add($classCombo) #>
 
-$MainForm.Controls["main"].Controls.Add($CelebrityInputBox)
+$MainForm.Controls["main"].Controls.Add($TrainingImagesBrowse)
+$MainForm.Controls["main"].Controls.Add($tokenInputBox)
 $MainForm.Controls["main"].Controls.Add($ModelBrowse)
-$MainForm.Controls["main"].Controls.Add($projectInputBox)
+$MainForm.Controls["main"].Controls.Add($projectNameInputBox)
 
 logger.pop "UI Starting"
 $MainForm.ShowDialog()
-$MainForm.Dispose()
 
+<# if ($Global:train -eq $true) {
+    Start-Training $settings
+    if (Test-Path $trainedModelsDir) {
+        Invoke-Item $trainedModelsDir
+    }
+} #>

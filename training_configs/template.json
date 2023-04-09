@@ -1,0 +1,10 @@
+{
+        "project_name": "LeoMozoloa",
+        "training_model": "G:\\AI\\Training\\Dreambooth\\1.5-NewVAE.ckpt",
+        "training_images": "G:\\AI\\Training\\Datasets\\Mozoloa\\training_images",
+        "max_training_steps": 1500,
+        "regularization_images": "",
+        "token": "matthewdelnegro",
+        "class_word": "man",
+        "save_every_x_steps": 0
+}

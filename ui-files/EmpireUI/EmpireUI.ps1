@@ -265,7 +265,7 @@ function New-MainBrowseToFolder {
         $list,
         [string]$name,
         $help,
-        $browseAction,
+        [scriptblock]$browseAction,
         $path
     )
     $inputBoxField = New-ControlHeader $text $help
@@ -273,16 +273,58 @@ function New-MainBrowseToFolder {
     $browseBox = New-Object System.Windows.Forms.Panel
     $browseBox.Dock = "Bottom"
     $browseBox.AutoSize = $true
-    
-    $browseBTN = New-MainButton -Text "Browse" -name $name
+    $browseBox.Name = ""
+
+    $browseBTN = New-MainButton -Text "Browse" -name $name -OnButtonClick $browseAction
     $browseBTN.Anchor = "Right"
     $browseBTN.dock = "Top"
     $browseBTN.size = "70,10"
     $browseBTN.Padding = 0
-    $browseBTN.Add_Click($browseAction)
 
     $browseText = New-Object System.Windows.Forms.Label
     $browseText.Anchor = "Left"
+    $browseText.Name = $name + "Text"
+    $browseText.Dock = "Top"
+    $browseText.Text = "No model selected"
+    if ($path) {
+        $browseText.Text = Get-ShortenedPath $path 40
+    }
+
+    $browseText.ForeColor = $Theme.SecondaryTextColor
+
+    $browseBox.Controls.Add($browseText)
+    $browseBox.Controls.Add($browseBTN)
+    $inputBoxField.Controls.Add($browseBox)
+    return $inputBoxField
+
+}
+
+function New-MainBrowse {
+    param(
+        [String]$type,
+        [String]$text,
+        $list,
+        [string]$name,
+        $help,
+        [scriptblock]$browseAction,
+        $path
+    )
+    $inputBoxField = New-ControlHeader $text $help
+
+    $browseBox = New-Object System.Windows.Forms.Panel
+    $browseBox.Dock = "Bottom"
+    $browseBox.AutoSize = $true
+    $browseBox.Name = ""
+
+    $browseBTN = New-MainButton -Text "Browse" -name $name -OnButtonClick $browseAction
+    $browseBTN.Anchor = "Right"
+    $browseBTN.dock = "Top"
+    $browseBTN.size = "70,10"
+    $browseBTN.Padding = 0
+
+    $browseText = New-Object System.Windows.Forms.Label
+    $browseText.Anchor = "Left"
+    $browseText.Name = $name + "Text"
     $browseText.Dock = "Top"
     $browseText.Text = "No model selected"
     if ($path) {
@@ -334,4 +376,19 @@ function Open-Link {
         [string]$link
     )
     Start-Process $link -Verb Open
+}
+
+function Find-Control($ParentControl, $ControlName) {
+    foreach ($ChildControl in $ParentControl.Controls) {
+        if ($ChildControl.Name -eq $ControlName) {
+            return $ChildControl
+        }
+        elseif ($ChildControl.Controls.Count -gt 0) {
+            $FoundControl = Find-Control -ParentControl $ChildControl -ControlName $ControlName
+            if ($FoundControl) {
+                return $FoundControl
+            }
+        }
+    }
+    return $null
 }
