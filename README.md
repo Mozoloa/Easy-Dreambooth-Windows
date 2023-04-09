@@ -92,9 +92,11 @@ Once everything is set, click train and the rest should happen in the powershell
 If all goes well, the training will finish, the trained model will be pruned (to be of lower size) and once all is done, it should open the "trained_models" with your newly trained .ckpt model in it ! 
 
 You can then move it wherever you want and use it in any of your desired Stable Diffusion Software/UI by using this formula in your prompt:
-`Token(no caps no space)` + `Class`
+`Token` + `Class (optional if you've set it to "none")`
 
-For example : if you've chosen **Barrack Obama** as your celeb doppleganger before training, and selected `man` as the **class**, then you should prompt like this : `a barrackobama man chilling on the beach, professional photography, 4K, whatever, whatever`
+**For example :** if you've chosen **Barrack Obama** as your celeb doppleganger before training, and selected `man` as the **class**, then you should prompt like this : `a Barrack Obama man chilling on the beach, professional photography, 4K, whatever, whatever`
+
+And if you've selected `none` as the **class**:  `Barrack Obama chilling on the beach, professional photography, 4K, whatever, whatever`
 
 
 
