@@ -77,7 +77,7 @@ Browse to the folder with the images of your subject. **Follow the instructions 
    3. Enter their name in the "**Celebrity Doppleganger (token)**" field
 
 ## <a name="class"></a> Class *("none" recommended)*
-What is your subject, a man, a woman or a person ? This will download a set of pre generated pictures of the class you've selected (see above) to compare them with how they look in the trained so everybody in the model doesn't end up looking like your subject.
+What is your subject, a man, a woman or a person ? This will download a set of pre generated pictures of the class you've selected (see above) to compare them with how they look in the trained model so everybody in the model doesn't end up looking like your subject.
 
 **Honestly, this isn't effective and make things twice as slow**
 
