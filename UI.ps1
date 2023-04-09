@@ -93,30 +93,33 @@ $MainForm = New-MainForm `
 $projectNameInputBox = New-MainInputBox `
     -text "Project Name" `
     -type "Input" `
-    -name "project_name"
+    -name "project_name" `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-project-name" } `
 
 $tokenInputBox = New-MainInputBox `
     -text "Celebrity Doppleganger (token)" `
     -type "Input" `
-    -name "token"
+    -name "token" `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-celebrity-doppleganger" } `
 
 $TraininStepsBox = New-MainInputBox `
     -text "Training Steps" `
     -type "Int" `
     -name "max_training_steps" `
-    -default 1500
+    -default 1500 `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-training-steps" } `
 
 $classCombo = New-MainInputBox `
     -text "Class" `
     -name "class_word" `
     -type "Combo" `
-    -list $classes
+    -list $classes `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-class" } `
 
 
 $ModelBrowse = New-MainBrowse `
     -text "Base Model" `
     -name "modelBrowse" `
-    -help { Open-Link -link "https://google.com" } `
     -browseAction {
     $openFileDialog = New-Object System.Windows.Forms.OpenFileDialog
     $openFileDialog.Filter = "Checkpoint files (*.ckpt)|*.ckpt"
@@ -127,12 +130,12 @@ $ModelBrowse = New-MainBrowse `
         $browseText.Text = Get-ShortenedPath $Global:settings.training_model 40
         $browseText.Refresh()
     } } `
-    -path $settings.training_model
+    -path $settings.training_model `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-base-model" } `
 
 $TrainingImagesBrowse = New-MainBrowse `
     -text "Training Images" `
     -name "trainingImagesBrowse" `
-    -help { Open-Link -link "https://google.com" } `
     -browseAction {
     $folderBrowserDialog = New-Object System.Windows.Forms.FolderBrowserDialog
     $folderBrowserDialog.Description = "Select a folder"
@@ -142,7 +145,8 @@ $TrainingImagesBrowse = New-MainBrowse `
         $browseText.Text = Get-ShortenedPath $Global:settings.training_images 40
         $browseText.Refresh()
     } } `
-    -path $settings.training_model
+    -path $settings.training_model `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-the-training-images" }
 
 
 $MainForm.Controls["main"].Controls.Add($TraininStepsBox)
