@@ -32,6 +32,7 @@ $settings = @{
     training_images       = ""
     max_training_steps    = 1500
     regularization_images = ""
+    use_reg_images        = $false
     token                 = ""
     class_word            = ""
     save_every_x_steps    = 0
@@ -64,6 +65,10 @@ function Update-Settings {
     $class_word = (Find-Control $form "class_word").SelectedIndex
     $settings.class_word = $classes[$class_word]
 
+    #Regu
+    $use_reg_images = (Find-Control $form "use_reg_images").Checked
+    $settings.use_reg_images = $use_reg_images
+
     #max_training_steps
     $max_training_steps = (Find-Control $form "max_training_steps").text
     $settings.max_training_steps = if (!$max_training_steps) {
@@ -73,9 +78,8 @@ function Update-Settings {
         1500
     }
     logger.info "Settings :`n$($settings | ConvertTo-Json -Depth 4)"
-
-    
 }
+
 # General Options
 $ValidateScript = {
     Update-Settings $MainForm
@@ -114,8 +118,13 @@ $classCombo = New-MainInputBox `
     -name "class_word" `
     -type "Combo" `
     -list $classes `
-    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-class" } `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-class" } 
 
+$reguCheckbox = New-InlineCheckbox `
+    -text "Use Regularization images" `
+    -name "use_reg_images" `
+    -list $classes `
+    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-class" } `
 
 $ModelBrowse = New-MainBrowse `
     -text "Base Model" `
@@ -130,8 +139,6 @@ $ModelBrowse = New-MainBrowse `
         $browseText.Text = Get-ShortenedPath $Global:settings.training_model 40
         $browseText.Refresh()
     } } `
-    -path $settings.training_model `
-    -help { Open-Link -link "https://github.com/Mozoloa/Easy-Dreambooth-Windows#-base-model" } `
 
 $TrainingImagesBrowse = New-MainBrowse `
     -text "Training Images" `
@@ -151,6 +158,7 @@ $TrainingImagesBrowse = New-MainBrowse `
 
 $MainForm.Controls["main"].Controls.Add($TraininStepsBox)
 $MainForm.Controls["main"].Controls.Add($ModelBrowse)
+$MainForm.Controls["main"].Controls.Add($reguCheckbox)
 $MainForm.Controls["main"].Controls.Add($classCombo)
 $MainForm.Controls["main"].Controls.Add($tokenInputBox)
 $MainForm.Controls["main"].Controls.Add($TrainingImagesBrowse)

@@ -9,6 +9,7 @@
   - [ The training images](#-the-training-images)
   - [ Celebrity doppleganger](#-celebrity-doppleganger)
   - [ Class](#-class)
+  - [ Use regularization image (not sure it's a good idea)](#-use-regularization-image-not-sure-its-a-good-idea)
   - [ Base Model](#-base-model)
   - [ Training Steps](#-training-steps)
   - [ Train \& Use](#-train--use)
@@ -77,7 +78,10 @@ Browse to the folder with the images of your subject. **Follow the instructions 
    3. Enter their name in the "**Celebrity Doppleganger (token)**" field
 
 ## <a name="class"></a> Class
-What gender is your subject ? This will help compare with the existing representation in the model by downloading a set of pre generated pictures of that class (woman, man or person) so everybody in the model doesn't end up looking like your subject (honestly, they will anyway lmao)
+What is your subject, a man, a woman or a person ?
+
+## <a name="use-regularization-image"></a> Use regularization image (not sure it's a good idea)
+This will download a set of pre generated pictures of the class you've selected (see above) to compare them with how they look in the trained so everybody in the model doesn't end up looking like your subject (honestly, this isn't effective and make things very slow)
 
 ## <a name="base-model"></a> Base Model
 Browse to the model you'll use as a base for training, we recommend using [Stable Diffusion V1.5 with the New VAE](https://anga.tv/ems/model.ckpt) as this works best.

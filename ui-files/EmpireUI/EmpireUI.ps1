@@ -311,6 +311,35 @@ function New-MainBrowseToFolder {
 
 }
 
+function New-InlineCheckbox {
+    param(
+        [String]$text,
+        [Boolean]$checked,
+        [String]$name
+    )
+    $inputBoxField = New-Object System.Windows.Forms.Panel
+    $inputBoxField.AutoSize = $true
+    $inputBoxField.Dock = "Top"
+    $inputBoxField.Padding = "0,10,0,0"
+
+    $inputBoxText = New-Object System.Windows.Forms.Label
+    $inputBoxText.Text = $text
+    $inputBoxText.ForeColor = $Theme.MainTextColor
+    $inputBoxText.Dock = "Top"
+
+    $CheckBox = New-Object System.Windows.Forms.CheckBox
+    $CheckBox.size = "20,10"
+    $CheckBox.Dock = "Right"
+    $CheckBox.Name = $name
+    $CheckBox.BackColor = $Theme.MainBGColor
+    $CheckBox.ForeColor = $Theme.SecondaryTextColor
+
+    $inputBoxField.Controls.Add($inputBoxText)
+    $inputBoxField.Controls.Add($CheckBox)
+    return $inputBoxField
+
+}
+
 function New-MainBrowse {
     param(
         [String]$type,

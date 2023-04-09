@@ -55,13 +55,6 @@ Function Start-Training {
         Remove-Item -Recurse -Force $file -ErrorAction SilentlyContinue
     }
 
-    # Set regularization images
-    $settings.regularization_images = Set-RegImages $settings.class_word
-
-    # Log training start
-    logger.pop "Training starts now"
-    logger.info "Training project with the following parameters`nBase Model: $($settings.training_model) Project Name: $($settings.project_name) '$($settings.token) $($settings.class_word)'`nUsing images from $($settings.training_images)"
-
     # Build Python arguments
     $pythonArgs = @{
         'project_name'       = $settings.project_name
@@ -74,16 +67,21 @@ Function Start-Training {
         'flip_p'             = 0.5
         'save_every_x_steps' = $settings.save_every_x_steps
     }
-
-    # Add regularization images to Python arguments if available
-    if ($settings.regularization_images) {
-        logger.info "Regularisation images from $($settings.regularization_images)"
-        $pythonArgs['regularization_images'] = $settings.regularization_images
+    # Add regularization images to Python arguments if selected
+    if (!$settings.use_reg_images) {
+        $reguMsg = "No regularisation images"
+        $settings.regularization_images = ""
     }
     else {
-        logger.info "No regularisation images"
+        $settings.regularization_images = Set-RegImages $settings.class_word
+        $pythonArgs['regularization_images'] = $settings.regularization_images
+        $reguMsg = "Regularisation images from $($settings.regularization_images)"
     }
-
+    # Log training start
+    logger.pop "Training starts now"
+    logger.info "Training project with the following parameters`nBase Model: $($settings.training_model) Project Name: $($settings.project_name) '$($settings.token) $($settings.class_word)'`nUsing images from $($settings.training_images)"
+    logger.info $reguMsg
+    
     # Build Python command
     $pythonCommand = 'python "main.py" '
     foreach ($arg in $pythonArgs.GetEnumerator()) {
@@ -95,7 +93,7 @@ Function Start-Training {
     }
 
     # Print Python command
-    logger.info "Python command: $pythonCommand"
+    logger.action "Launching python with:`n $pythonCommand"
 
     # Launch Python script
     Invoke-Expression $pythonCommand
