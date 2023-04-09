@@ -1,7 +1,7 @@
 # Index
 
 - [Index](#index)
-  - [  Introduction](#--introduction)
+  - [ Introduction](#-introduction)
     - [**⚠️ WARNING**](#️-warning)
 - [ Setup](#-setup)
 - [ Setting things up in the UI](#-setting-things-up-in-the-ui)
@@ -13,14 +13,14 @@
   - [ Training Steps](#-training-steps)
   - [ Train \& Use](#-train--use)
 
-## <a name="Introduction"></a>  Introduction
+## <a name="Introduction"></a> Introduction
 This is repo is based off [Joe Penna's Dreambooth Repo](https://github.com/JoePenna/Dreambooth-Stable-Diffusion)
 
 I originally created this fork to simplify local dreambooth face training on windows for GPUs with more than 24GB of VRAM. **I found that using the countless optimized versions of dreambooth and lora never matched the quality of result you get with the original implementation, by far** and I was tired of the cloud GPU hassle
 
 ### **⚠️ WARNING**
 
-- This repo probably won't be mainted much, it's a spare time side project
+- This repo probably won't be maintained much, it's a spare time side project
 - This is only for training face portraits of humans, altho you might be able to fiddle around and train other things
 - AFAIK You can **only run this on a GPU with 24GB of VRAM or more**(e.g. 3090) on **Windows 10 or 11 x64**. Making sure this is the *only* program running can greatly help the speed and stability.
 - It works best with variants of Stability's Stable Diffusion 1.5 model
@@ -43,8 +43,8 @@ I originally created this fork to simplify local dreambooth face training on win
 9. Launch the program (optionaly from your taskbar !)
 10. This will launch a powershell window before the UI, Wait for it to install all that's needed, this can take a while
 
-# <a name="settings-things-up"></a> Setting things up in the UI
-⚠️ ***During all the steps bellow, do not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
+# <a name="setting-things-up"></a> Setting things up in the UI
+***⚠️ During all the steps below, do not use folders with weird special characters in their path, this will break things and I don't plan on actively fixing potential weird paths***
 
 ![UI](./readme-images/UI.png)
 
