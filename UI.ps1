@@ -80,7 +80,7 @@ function Update-Settings {
 $ValidateScript = {
     Update-Settings $MainForm
     $Global:train = $true
-    <#  $MainForm.Dispose() #>
+    $MainForm.Dispose()
 }
 
 $MainForm = New-MainForm `
@@ -159,9 +159,9 @@ $MainForm.Controls["main"].Controls.Add($projectNameInputBox)
 logger.pop "UI Starting"
 $MainForm.ShowDialog()
 
-<# if ($Global:train -eq $true) {
+if ($Global:train -eq $true) {
     Start-Training $settings
     if (Test-Path $trainedModelsDir) {
         Invoke-Item $trainedModelsDir
     }
-} #>
+}
