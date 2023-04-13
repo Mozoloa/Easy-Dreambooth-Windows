@@ -1,5 +1,63 @@
 . "$PSScriptRoot\shared.ps1"
 
+
+# Conda
+function Test-CondaInitialized {
+    return $Env:CONDA_DEFAULT_ENV
+}
+
+function Test-EnvironmentExists ($envName) {
+    $condaEnvs = conda env list
+    return $condaEnvs -match $envName
+}
+function Get-EnvironmentHash ($filePath) {
+    $hash = (Get-FileHash -LiteralPath $filePath -Algorithm SHA256).Hash
+    return $hash
+}
+
+function Save-EnvironmentHash ($filePath, $hash) {
+    $hash | Out-File -FilePath $filePath -Force
+}
+
+function Enable-Conda {
+    $envName = "easydreambooth"
+    $envFile = "environment.yaml"
+    $envHashFile = ".envhash"
+
+    if (-not (Test-CondaInitialized)) {
+        logger.action "Initiating Powershell"
+        conda init powershell
+    }
+    else {
+        logger.info "Powershell is in conda mode"
+    }
+
+    if (-not (Test-EnvironmentExists $envName)) {
+        logger.action "Creating Conda environment '$envName', this can take a while..."
+        conda env create --name $envName -f $envFile
+        logger.success "Conda environment '$envName' created successfully."
+    }
+
+    $currentHash = Get-EnvironmentHash $envFile
+    $savedHash = ""
+    if (Test-Path $envHashFile) {
+        $savedHash = Get-Content $envHashFile
+    }
+
+    if ($currentHash -ne $savedHash) {
+        logger.action "Updating Conda environment '$envName', this can take a while..."
+        conda env update --name $envName -f $envFile
+        logger.success "Conda environment '$envName' updated successfully."
+        Save-EnvironmentHash $envHashFile $currentHash
+    }
+    else {
+        logger.info "The Conda environment '$envName' is up to date."
+    }
+
+    logger.action "Activating environment '$envName'"
+    conda activate $envName
+}
+
 # Setup Reg Images
 Function Set-RegImages {
     param($class_word)

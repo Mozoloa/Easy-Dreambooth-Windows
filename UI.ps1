@@ -3,28 +3,7 @@ Import-Module .\ui-files\Functions.psm1 -Force
 . ".\ui-files\shared.ps1"
 
 # Env Setup
-function Init-Conda {
-    if (!$Env:CONDA_DEFAULT_ENV) {
-        logger.action "Initiating Powershell"
-        conda init powershell
-    }
-    else {
-        logger.info "Powershell is in conda mode"
-    }
-    $envName = "easydreambooth"
-    $condaEnvs = conda env list
-    if ($condaEnvs -match $envName) {
-        logger.info "The Conda environment '$envName' already exists."
-    }
-    else {
-        logger.action "Creating Conda environment '$envName', this can take a while..."
-        conda env create --name $envName -f environment.yaml
-        logger.success "Conda environment '$envName' created successfully."
-    }
-    logger.action "Activating environment '$envName'"
-    conda activate $envName
-}
-Init-Conda
+Enable-Conda
 
 $settings = @{
     project_name          = ""
