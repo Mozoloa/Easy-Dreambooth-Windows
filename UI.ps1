@@ -49,7 +49,7 @@ function Update-Settings {
 
     #max_training_steps
     $max_training_steps = (Find-Control $form "max_training_steps").text
-    $settings.max_training_steps = if (!$max_training_steps) {
+    $settings.max_training_steps = if ($max_training_steps) {
         $max_training_steps
     }
     else {
