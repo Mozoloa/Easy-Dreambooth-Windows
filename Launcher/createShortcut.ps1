@@ -1,6 +1,6 @@
-$ScriptPath = (Get-Item -Path ".\UI.ps1" -Verbose).FullName
+$ScriptPath = (Get-Item -Path "./UI.ps1" -Verbose).FullName
 $ShortcutPath = (Join-Path -Path (Get-Location) -ChildPath "EasyDreamboothUI.lnk")
-$IconPath = (Get-Item -Path "ui-files/media/ShortcutIcon.ico" -Verbose).FullName
+$IconPath = (Get-Item -Path "./media/ShortcutIcon.ico" -Verbose).FullName
 $WScriptShell = New-Object -ComObject WScript.Shell
 
 If (Test-Path $ShortcutPath) {

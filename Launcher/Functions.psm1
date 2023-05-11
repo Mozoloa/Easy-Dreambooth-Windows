@@ -1,7 +1,34 @@
 . "$PSScriptRoot\shared.ps1"
 
-
 # Conda
+function Install-Miniconda {
+    $miniconda_installed = (Get-Command -ErrorAction SilentlyContinue conda) -ne $null
+
+    if (!$miniconda_installed) {
+        logger.action "Installing Miniconda"
+        $url = "https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe"
+        $output = "Miniconda3-latest-Windows-x86_64.exe"
+        $install_path = "C:\Miniconda3"
+
+        # Download the installer
+        Invoke-WebRequest -Uri $url -OutFile $output
+
+        # Install Miniconda silently
+        Start-Process -FilePath ".\$output" -ArgumentList "/InstallationType=JustMe", "/AddToPath=1", "/RegisterPython=0", "/S", "/D=$install_path" -Wait -NoNewWindow
+
+        # Remove the installer
+        Remove-Item $output
+
+        # Add Miniconda to the PATH environment variable
+        $env:Path += ";$install_path"
+        $env:Path += ";$install_path\Scripts"
+        $env:Path += ";$install_path\Library\bin"
+        [System.Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::User)
+        return
+    }
+    $condaV = conda --version
+    logger.info "Conda version : $condaV"
+}
 function Test-CondaInitialized {
     return $Env:CONDA_DEFAULT_ENV
 }
@@ -21,7 +48,7 @@ function Save-EnvironmentHash ($filePath, $hash) {
 
 function Enable-Conda {
     $envName = "easydreambooth"
-    $envFile = "environment.yaml"
+    $envFile = "$dreamboothFolder\environment.yaml"
     $envHashFile = ".envhash"
 
     if (-not (Test-CondaInitialized)) {
@@ -56,8 +83,28 @@ function Enable-Conda {
 
     logger.action "Activating environment '$envName'"
     conda activate $envName
+    if (-Not (conda list git -n $envName | Select-String 'git')) {
+        conda install git -y
+    }
 }
 
+function Import-DBGitHub {
+    if (!(test-path $dreamboothFolder)) {
+        Set-Location $InstallPath
+        git clone https://github.com/JoePenna/Dreambooth-Stable-Diffusion
+        Set-Location $launcherFolder
+    }
+}
+
+function Update-DBGithub {
+    if (!(test-path $dreamboothFolder)) {
+        Import-DBGitHub
+        return
+    }
+    Set-Location $InstallPath
+    git pull https://github.com/JoePenna/Dreambooth-Stable-Diffusion 
+    Set-Location $launcherFolder
+}
 # Setup Reg Images
 Function Set-RegImages {
     param($class_word)
